@@ -26,6 +26,7 @@ cap.set(3,1280) #width
 cap.set(4,720) #height
 
 
+
 #Hand Tracking
 mpHands=mp.solutions.hands
 hands=mpHands.Hands()
