@@ -26,7 +26,6 @@ cap.set(3,1280) #width
 cap.set(4,720) #height
 
 
-
 #Hand Tracking
 mpHands=mp.solutions.hands
 hands=mpHands.Hands()
@@ -61,7 +60,7 @@ rectBalloon.x,rectBalloon.y=500,300
 
 
 #Variables
-speed=15
+speed=20
 
 
 def resetBalloon():
