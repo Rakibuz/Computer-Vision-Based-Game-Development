@@ -2,6 +2,7 @@ import mediapipe as mp
 import cv2
 import time
 import math
+import cvzone
 from cvzone.PlotModule import LivePlot
 
 
@@ -12,6 +13,7 @@ drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
 
 cap = cv2.VideoCapture(0)
 pTime = 0
+plotY = LivePlot(640,360,[20,50])
 
 
 idList=[22,23,24,26,110,157,158,159,160,161,130,243]
@@ -57,16 +59,23 @@ while True:
                 length_Ver=findDistance(leftUp,leftDown)
                 length_Hor=findDistance(leftLeft,leftRight)
 
-                print(int((length_Ver/length_Hor)*100))
-
+                ratio=(length_Ver/length_Hor)*100
+                
+                imgPlot=plotY.update(ratio)
+                img=cv2.resize(img,(640,360))
+                imgStack=cvzone.stackImages([img,imgPlot],2,1)
+            else:
+                img=cv2.resize(img,(640,360))
+                imgStack=cvzone.stackImages([img,imgPlot],2,1)
+                
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
     cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN,
                 3, (255, 0, 0), 3)
 
-    cv2.imshow("Image", img)
-    if cv2.waitKey(5) & 0xFF == ord("q"):
+    cv2.imshow("Image", imgStack)
+    if cv2.waitKey(25) & 0xFF == ord("q"):
             break
 
 cv2.destroyAllWindows()
