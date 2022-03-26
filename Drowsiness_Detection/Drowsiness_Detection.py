@@ -76,7 +76,7 @@ while True:
                 ratio=int((length_Ver/length_Hor)*100)
                 ratiolist.append(ratio)
                 
-                if len(ratiolist)>3:
+                if len(ratiolist)>4:
                     ratiolist.pop(0)
                 
                 ratioAvg=sum(ratiolist)/len(ratiolist)
