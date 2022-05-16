@@ -15,7 +15,9 @@ logo = cv2.imread(img_path, -1)
 
 
 watermark = image_resize(logo, height=50)
+watermark = cv2.cvtColor(watermark, cv2.COLOR_BGR2BGRA)
 cv2.imshow('watermark',watermark)
+#print(watermark.shape)
 
 while(True):
     # Capture frame-by-frame
@@ -35,7 +37,17 @@ while(True):
     # cv2.rectangle(frame, (start_cord_x,start_cord_y), (end_cord_x, end_cord_y), color, stroke)
     # print(frame[start_cord_x:end_cord_x,start_cord_y:end_cord_y])
     
-    
+    frame_h, frame_w, frame_c = frame.shape
+    print(frame.shape)
+    # gray=cv2.cvtColor(frame.copy(),cv2.COLOR_BGR2GRAY)
+    # print(gray.shape)
+
+
+    # overlay with 4 channels BGR and Alpha
+    overlay = np.zeros((frame_h, frame_w, 4), dtype='uint8')
+    overlay[100:250,100:125]=(255,0,0,1)  #  overlay[y:x]      B,G,R,A
+    overlay[100:250,150:225]=(255,0,0,1)  #  overlay[y:x]      B,G,R,A
+    cv2.imshow("overlay",overlay)
     
     
     
