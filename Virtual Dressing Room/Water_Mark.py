@@ -51,15 +51,18 @@ while(True):
     for i in range(0, watermark_h):
         for j in range(0, watermark_w):
             if watermark[i,j][3] != 0:
-                overlay[100+i,150+j]=watermark[i,j]
-               
+               offset = 10
+               h_offset = frame_h - watermark_h - offset
+               w_offset = frame_w - watermark_w - offset
+               overlay[h_offset + i, w_offset+ j] = watermark[i,j]
+
  
-    cv2.addWeighted(overlay, 0.25, frame, 1.0, 0, frame)
+    f_out=cv2.addWeighted(overlay, 0.25, frame, 1.0, 0)
     
     
     
     #out.write(frame)  #saving video frame
-    cv2.imshow('frame',frame)
+    cv2.imshow('frame',f_out)
 
     if cv2.waitKey(20) & 0xFF == ord('q'):
      break
