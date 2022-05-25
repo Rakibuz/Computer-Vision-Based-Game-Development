@@ -41,7 +41,7 @@ while True:
         plot_landmark(results, facial_area_obj_lips,(255,0,255))
 
         facial_area_obj_left_eye = facial_areas['Left_eye']
-        plot_landmark(results, facial_area_obj_left_eye,(255,0,0))
+        plot_landmark(results, facial_area_obj_left_eye,(0,0,255))
 
         facial_area_obj_right_eye = facial_areas['Right_eye']
         plot_landmark(results, facial_area_obj_right_eye,(0,0,255))
