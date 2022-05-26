@@ -3,10 +3,8 @@ import mediapipe as mp
 import cv2
 import time
 import math
-import pyttsx3
 import winsound
  
-
 mpDraw = mp.solutions.drawing_utils
 mpFaceMesh = mp.solutions.face_mesh
 mp_face_mesh = mp.solutions.face_mesh
@@ -20,8 +18,6 @@ frame_count = 0
 min_frame = 9
 min_tolerance = 1.8
 status=''
- 
-speech = pyttsx3.init()
  
 
 def aspect_ratio(p1,p2,p3,p4,p5,p6):
@@ -43,7 +39,6 @@ def aspect_ratio(p1,p2,p3,p4,p5,p6):
     denominator=2*left_right
     aspect_ratio=numerator/denominator
     #print(ratio)
-
     return aspect_ratio
 
 facial_areas = {
@@ -93,7 +88,6 @@ while True:
         ratio_eye_right =  aspect_ratio(landmarks.landmark[362],landmarks.landmark[385], landmarks.landmark[387], landmarks.landmark[263], landmarks.landmark[373], landmarks.landmark[380])
         ratio_lips_ =  aspect_ratio(landmarks.landmark[61],landmarks.landmark[39], landmarks.landmark[269], landmarks.landmark[291], landmarks.landmark[405], landmarks.landmark[181])
         eye_ratio= ((ratio_eye_left + ratio_eye_right)/2.0)*10
-         
         ratio_lips=ratio_lips_*10
 
         #print(eye_ratio)
@@ -119,7 +113,6 @@ while True:
     pTime = cTime
     cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
     cv2.putText(img,  f'{status}', (460, 70), cv2.FONT_HERSHEY_PLAIN, 3,color, 3)
-
     
     cv2.imshow("Image", img)
     if cv2.waitKey(5) & 0xFF == ord("q"):
