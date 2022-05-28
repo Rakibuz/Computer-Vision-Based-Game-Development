@@ -56,10 +56,8 @@ def plot_landmark(img_, facial_area_obj,color):
     for source_idx, target_idx in facial_area_obj:
         source = landmarks.landmark[source_idx]
         target = landmarks.landmark[target_idx]
- 
         relative_source = (int(img.shape[1] * source.x), int(img.shape[0] * source.y))
         relative_target = (int(img.shape[1] * target.x), int(img.shape[0] * target.y))
- 
         cv2.line(img, relative_source, relative_target, color, thickness = 1)
 
 
@@ -67,8 +65,7 @@ while (cap.isOpened()):
     success, img = cap.read()
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = face_mesh.process(imgRGB)
-    #landmarks = results.multi_face_landmarks[0]
-    
+     
     if results.multi_face_landmarks:
         for landmarks in results.multi_face_landmarks:
 
