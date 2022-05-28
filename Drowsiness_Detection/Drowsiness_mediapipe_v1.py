@@ -63,50 +63,52 @@ def plot_landmark(img_, facial_area_obj,color):
         cv2.line(img, relative_source, relative_target, color, thickness = 1)
 
 
-while True:
+while (cap.isOpened()):
     success, img = cap.read()
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = face_mesh.process(imgRGB)
-    landmarks = results.multi_face_landmarks[0]
+    #landmarks = results.multi_face_landmarks[0]
     
+    if results.multi_face_landmarks:
+        for landmarks in results.multi_face_landmarks:
 
-    for facial_area in facial_areas.keys():
+            for facial_area in facial_areas.keys():
 
-        facial_area_obj_lips = facial_areas['Lips']
-        plot_landmark(results, facial_area_obj_lips,(255,0,255))
+                facial_area_obj_lips = facial_areas['Lips']
+                plot_landmark(results, facial_area_obj_lips,(255,0,255))
 
-        facial_area_obj_left_eye = facial_areas['Left_eye']
-        plot_landmark(results, facial_area_obj_left_eye,(255,0,0))
+                facial_area_obj_left_eye = facial_areas['Left_eye']
+                plot_landmark(results, facial_area_obj_left_eye,(255,0,0))
 
-        facial_area_obj_right_eye = facial_areas['Right_eye']
-        plot_landmark(results, facial_area_obj_right_eye,(255,0,0))
+                facial_area_obj_right_eye = facial_areas['Right_eye']
+                plot_landmark(results, facial_area_obj_right_eye,(255,0,0))
 
-        facial_area_obj_face_oval = facial_areas['Face_oval']
-        plot_landmark(results, facial_area_obj_face_oval,(0,255,0))
+                facial_area_obj_face_oval = facial_areas['Face_oval']
+                plot_landmark(results, facial_area_obj_face_oval,(0,255,0))
 
-        ratio_eye_left =  aspect_ratio(landmarks.landmark[33],landmarks.landmark[160], landmarks.landmark[158], landmarks.landmark[133], landmarks.landmark[153], landmarks.landmark[144])
-        ratio_eye_right =  aspect_ratio(landmarks.landmark[362],landmarks.landmark[385], landmarks.landmark[387], landmarks.landmark[263], landmarks.landmark[373], landmarks.landmark[380])
-        ratio_lips_ =  aspect_ratio(landmarks.landmark[61],landmarks.landmark[39], landmarks.landmark[269], landmarks.landmark[291], landmarks.landmark[405], landmarks.landmark[181])
-        eye_ratio= ((ratio_eye_left + ratio_eye_right)/2.0)*10
-        ratio_lips=ratio_lips_*10
+                ratio_eye_left =  aspect_ratio(landmarks.landmark[33],landmarks.landmark[160], landmarks.landmark[158], landmarks.landmark[133], landmarks.landmark[153], landmarks.landmark[144])
+                ratio_eye_right =  aspect_ratio(landmarks.landmark[362],landmarks.landmark[385], landmarks.landmark[387], landmarks.landmark[263], landmarks.landmark[373], landmarks.landmark[380])
+                ratio_lips_ =  aspect_ratio(landmarks.landmark[61],landmarks.landmark[39], landmarks.landmark[269], landmarks.landmark[291], landmarks.landmark[405], landmarks.landmark[181])
+                eye_ratio= ((ratio_eye_left + ratio_eye_right)/2.0)*10
+                ratio_lips=ratio_lips_*10
 
-        #print(eye_ratio)
-        #print(ratio_lips*10)
-        
-    if eye_ratio <= min_tolerance:
-            frame_count +=1
-    else:
-        frame_count = 0
+                #print(eye_ratio)
+                #print(ratio_lips*10)
+                
+            if eye_ratio <= min_tolerance:
+                    frame_count +=1
+            else:
+                frame_count = 0
 
-            
-    if ((frame_count > min_frame)or (ratio_lips>=5.6)):
-        #Closing the eyes
-        status='Drowsy'
-        winsound.Beep(440, 500)
-        color=(255,255,0)
-    else:
-        status='Active'
-        color=(0,255,0)
+                    
+            if ((frame_count > min_frame)or (ratio_lips>=5.6)):
+                #Closing the eyes
+                status='Drowsy'
+                winsound.Beep(440, 500)
+                color=(255,255,0)
+            else:
+                status='Active'
+                color=(0,255,0)
               
     cTime = time.time()
     fps = 1 / (cTime - pTime)
