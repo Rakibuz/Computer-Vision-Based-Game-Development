@@ -5,15 +5,15 @@ import time
 import pickle
 
 
-face_cascade = cv2.CascadeClassifier('cascades/data/haarcascade_frontalface_alt2.xml')
-eye_cascade = cv2.CascadeClassifier('cascades/data/haarcascade_eye.xml') 
+face_cascade = cv2.CascadeClassifier('.\Virtual Dressing Room\cascades\data\haarcascade_frontalface_alt2.xml')
+eye_cascade = cv2.CascadeClassifier(r'.\Virtual Dressing Room\cascades\data\haarcascade_eye.xml') 
 lower_body_cascade = cv2.CascadeClassifier('cascades/data/haarcascade_lowerbody.xml')
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("./recognizers/face-trainner.yml")
+recognizer.read(r"./Virtual Dressing Room/recognizers/face-trainner.yml")
 
 labels={"person_name":1}
-with open("pickles/face-labels.pickle", 'rb') as f:
+with open("./Virtual Dressing Room/pickles/face-labels.pickle", 'rb') as f:
     og_labels=pickle.load(f)
     labels = {v:k for k,v in og_labels.items()}
 
@@ -40,11 +40,11 @@ while(True):
     gray  = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
     eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
-    lower_body = lower_body_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
+    #lower_body = lower_body_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
     
     roi_locator(faces,(255,0,0),2,frame)
     roi_locator(eyes,(0,255,0),2,frame)
-    roi_locator(lower_body,(0,255,0),2,frame)
+    #roi_locator(lower_body,(0,255,0),2,frame)
      
     cTime = time.time()
     fps = 1 / (cTime - pTime)
