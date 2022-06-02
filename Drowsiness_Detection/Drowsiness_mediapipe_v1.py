@@ -18,6 +18,7 @@ frame_count = 0
 min_frame = 9
 min_tolerance = 1.8
 status=''
+color=''
  
 
 def aspect_ratio(p1,p2,p3,p4,p5,p6):
@@ -102,7 +103,7 @@ while (cap.isOpened()):
                 #Closing the eyes
                 status='Drowsy'
                 winsound.Beep(440, 500)
-                color=(255,255,0)
+                color=(0,0,255)
             else:
                 status='Active'
                 color=(0,255,0)
@@ -110,7 +111,7 @@ while (cap.isOpened()):
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
-    cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+    cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, color, 3)
     cv2.putText(img,  f'{status}', (460, 70), cv2.FONT_HERSHEY_PLAIN, 3,color, 3)
     
     cv2.imshow("Image", img)
