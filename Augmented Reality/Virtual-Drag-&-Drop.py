@@ -1,3 +1,4 @@
+import math
 import cv2
 import mediapipe as mp
 
@@ -8,6 +9,9 @@ mpHands=mp.solutions.hands
 hands=mpHands.Hands()
 mpDraw= mp.solutions.drawing_utils
 color=(255,0,255)
+
+cx,cy,w,h=100,100,200,200
+
 
 def Hand_Finder(img,draw=True):
     if results.multi_hand_landmarks:
@@ -30,6 +34,20 @@ def Finger_Detector(img,handNo=0,draw=True):
                 cv2.circle(img,(cx,cy),5,(255,0,255),cv2.FILLED)
     return landmark_List
 
+def tip_cliked(tip1,tip2):
+
+    x1,y1=lmlist[tip1][1],lmlist[tip1][2]
+    x2,y2=lmlist[tip2][1],lmlist[tip2][2]
+    cv2.circle(img,(x1,y1),10,(255,0,255),cv2.FILLED)
+    cv2.circle(img,(x2,y2),10,(255,0,255),cv2.FILLED)
+    cv2.line(img,(x1,y1),(x2,y2),(255,0,255),3)
+    cv2.circle(img,((x1+x2)//2,(y1+y2)//2),10,(255,0,255),cv2.FILLED)
+
+    length=math.hypot(x2-x1,y2-y1)
+    #print(length)
+    if length<48:
+            cv2.circle(img,((x1+x2)//2,(y1+y2)//2),10,(0,255,0),cv2.FILLED)
+    return length
 
 while True:
 
@@ -43,16 +61,21 @@ while True:
     #print(lmlist)
 
     if len(lmlist)!=0:
-        cursor=[]
-        cursor=lmlist[8][1:] #[8, 404, 406]  cursor is having [0,1,2] 1and 2 value
-        if 100<cursor[0]<300 and 100<cursor[1]<300:
-            #color=(0,255,0)
-            print('Entered')
+        length=tip_cliked(4,8)
+        if length<48:
+            #cursor=[]
+            cursor=lmlist[8][1:] #[8, 404, 406]  cursor is having [0,1,2] 1and 2 value
+            #cursor=lmlist[8]
+            #print(cursor[0])
+            if cx-w//2<cursor[0]<cx+w//2 and cy-h//2<cursor[1]<cy+h//2:
+                color=(0,255,0)
+                #print('Entered')
+                cx,cy=cursor
+            else:
+                color=(255,0,255)
 
-    cv2.rectangle(img,(100,100),(300,300),color,cv2.FILLED)
+    cv2.rectangle(img,(cx-w//2,cy-h//2),(cx+w//2,cy+h//2),color,cv2.FILLED)
    
-
-
 
 
     cv2.imshow("Image",img)
