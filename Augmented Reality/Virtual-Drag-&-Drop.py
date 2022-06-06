@@ -15,7 +15,7 @@ color=(255,0,255)
 cx,cy,w,h=100,100,200,200
 
 class DragRect():
-    def __init__(self, posCenter, size=[200, 200]):
+    def __init__(self, posCenter, size=[200, 200]):  #creating constractor no need to call it explicitly
         self.posCenter = posCenter
         self.size = size
  
