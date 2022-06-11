@@ -58,7 +58,7 @@ class SnakeGameClass:
         # Draw Snake
          
         for i, point in enumerate(self.points):
-            if i != 0:
+            if i != 0: #first one does not have previous value
                 cv2.line(imgMain, self.points[i - 1], self.points[i], (0, 0, 255), 20)
         cv2.circle(imgMain, self.points[-1], 20, (0, 255, 0), cv2.FILLED)
     
