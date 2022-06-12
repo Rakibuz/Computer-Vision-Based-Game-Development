@@ -1,4 +1,3 @@
-import math
 import cv2
 import cvzone
 import mediapipe as mp
