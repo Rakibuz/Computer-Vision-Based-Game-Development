@@ -60,10 +60,9 @@ class SnakeGameClass:
 
     def update(self, imgMain, currentHead):
         if self.gameOver:
-            cvzone.putTextRect(imgMain, "Game Over", [300, 400],
-                               scale=7, thickness=5, offset=20)
-            cvzone.putTextRect(imgMain, f'Your Score: {self.score}', [300, 550],
-                               scale=7, thickness=5, offset=20)
+            cv2.putText(imgMain, "Game Over", (300, 400),cv2.FONT_HERSHEY_SIMPLEX, 2,(255,0,255), 5)
+            cv2.putText(imgMain, f'Your Score: {self.score}', (300, 550),cv2.FONT_HERSHEY_SIMPLEX, 2,(0,0,255), 5)
+             
         else:
             px, py = self.previousHead
             cx, cy = currentHead
@@ -106,7 +105,7 @@ class SnakeGameClass:
             
             #Draw Score
 
-            cv2.putText(imgMain, f'Score: {self.score}', [50, 80],scale=3, thickness=3, offset=10)
+            cv2.putText(imgMain, f'Score: {self.score}', (50, 80),cv2.FONT_HERSHEY_SIMPLEX,3,(0,255,0),3)
 
 
 
@@ -118,7 +117,7 @@ class SnakeGameClass:
             #print(minDist)
 
             if -1 <= minDist <= 1:
-                print("Hit")
+                #print("Hit")
                 self.gameOver = True
                 self.points = []  # all points of the snake
                 self.lengths = []  # distance between each point
@@ -126,7 +125,7 @@ class SnakeGameClass:
                 self.allowedLength = 150  # total allowed Length
                 self.previousHead = 0, 0  # previous head point
                 self.randomFoodLocation()
-                self.score = 0
+                #self.score = 0
 
         return imgMain
 
@@ -149,8 +148,12 @@ while True:
         img = game.update(img, pointIndex)
     
 
-
     cv2.imshow("Image",img)
-    if cv2.waitKey(5) & 0xFF == ord("q"):
-                break
+    key= cv2.waitKey(1)  
+    if key==ord('r'):
+        game.gameOver=False
+        game.score=0
+    if key==ord('q'):
+        break
+         
   
