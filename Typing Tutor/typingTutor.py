@@ -2,18 +2,16 @@ import numpy as np
 import cv2
 import pygame
 import mediapipe as mp
-#from cvzone.HandTrackingModule import HandDetector
+from cvzone.HandTrackingModule import HandDetector
 
 
 width =1280
 height = 720
 
 
-mpHands=mp.solutions.hands
-hands=mpHands.Hands(static_image_mode=True,max_num_hands=2,min_detection_confidence=0.5)
-mpDraw= mp.solutions.drawing_utils
+ 
   
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
 
@@ -91,28 +89,7 @@ for i, row in enumerate(rows):
     for j, alphabet in enumerate(row):
         keyLocationsBackground[alphabet] = [rowsStart[i] + 76 * j, 364 + 74 * i, 62, 62]
 
-
-
-#detector = HandDetector(detectionCon=0.4, maxHands=2)
-def Hand_Finder(img,draw=True):
-    if results.multi_hand_landmarks:
-        for handLms in results.multi_hand_landmarks:
-            if draw:
-                mpDraw.draw_landmarks(img, handLms,mpHands.HAND_CONNECTIONS)
-    return img
-
-def Finger_Detector(img,handNo=0,draw=True):
-    landmark_List=[]
-    if results.multi_hand_landmarks:
-        myHand=results.multi_hand_landmarks[handNo]
-
-        for id, lm in enumerate(myHand.landmark):
-            h,w,c =img.shape
-            cx,cy =int(lm.x*w),int(lm.y*h)
-            landmark_List.append([id,cx,cy])
-            if draw:
-                cv2.circle(img,(cx,cy),5,(255,0,255),cv2.FILLED)
-    return landmark_List
+detector = HandDetector(detectionCon=0.4, maxHands=2)
 
 while(cap.isOpened()):
       
@@ -131,11 +108,9 @@ while(cap.isOpened()):
           
         ret, img = cap.read()
         #cv2.imwrite('sample.jpg',img)
-        converted_image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-        results=hands.process(converted_image)
-        #hands, img = detector.findHands(img, flipType=False)
-        img=Hand_Finder(img)
-        lmlist=Finger_Detector(img,draw=False)
+       
+        img = detector.findHands(img)
+        #print(type(img))  <class 'numpy.ndarray'>
 
         matrix = cv2.getPerspectiveTransform(pts1, pts2)
         imgWarp = cv2.warpPerspective(img, matrix, (widthKeybord, heightKeybord))
@@ -145,14 +120,14 @@ while(cap.isOpened()):
             cv2.circle(img,point,5,(0,0,255),cv2.FILLED)
         
         
-        if hands:
-            print(len(lmlist))
-            if len(lmlist) >=21:
-                cv2.putText(imgBackground, "Detection: Solid", (50, 50), cv2.FONT_HERSHEY_PLAIN,
-                            2, (0, 255, 0), 2)
-            else:
-                cv2.putText(imgBackground, "Detection: Weak", (50, 50), cv2.FONT_HERSHEY_PLAIN,
-                            2, (0, 0, 255), 2)
+        # if img:
+        #     #print(len(lmlist))
+        #     if len(img) ==2:
+        #         cv2.putText(imgBackground, "Detection: Solid", (50, 50), cv2.FONT_HERSHEY_PLAIN,
+        #                     2, (0, 255, 0), 2)
+        #     else:
+        #         cv2.putText(imgBackground, "Detection: Weak", (50, 50), cv2.FONT_HERSHEY_PLAIN,
+        #                     2, (0, 0, 255), 2)
 
 
 
