@@ -2,9 +2,7 @@ import numpy as np
 import cv2
 import pygame
 import mediapipe as mp
-#from cvzone.HandTrackingModule import HandDetector
-
-
+ 
 width =1280
 height = 720
 
@@ -22,7 +20,7 @@ widthKeybord = 287*scale
 heightKeybord = 72*scale
 
 #initialWarpPoints = [[122, 272], [1192, 258], [136, 541], [1192, 516]]
-initialWarpPoints = [[176, 218], [1244, 213], [182, 484], [1238, 479]]
+initialWarpPoints = [[180, 218], [1215, 232], [175, 494], [1246, 476]]
 pts1 = np.float32(initialWarpPoints)
 pts2 = np.float32([[0, 0], [widthKeybord, 0], [0, heightKeybord], [widthKeybord, heightKeybord]])
 
@@ -114,6 +112,49 @@ def Finger_Detector(img,handNo=0,draw=True):
                 cv2.circle(img,(cx,cy),5,(255,0,255),cv2.FILLED)
     return landmark_List
 
+def handType(img):
+
+    """
+    Checks if the hand is left or right
+    :return: "Right" or "Left"
+    """
+    if results.multi_hand_landmarks != None:
+    #print(results.multi_handedness)
+        for hand in results.multi_handedness:
+            #print(hand)
+            #print(hand.classification)
+            #print(hand.classification[0])
+            h_Type=hand.classification[0].label
+            # if handType=='Left':
+            #     return 'right'
+            # if handType=='Right':
+            #     return 'left'
+    return h_Type
+
+
+fingerIds = {
+    "8": "index",
+    "12": "middle",
+    "16": "ring",
+    "20": "pinky"
+}
+
+
+# warp point to find the correct locations of the finger tips on the warped keyboard image
+def warpPoint(p, matrix):
+    px = (matrix[0][0] * p[0] + matrix[0][1] * p[1] + matrix[0][2]) / (
+        (matrix[2][0] * p[0] + matrix[2][1] * p[1] + matrix[2][2]))
+    py = (matrix[1][0] * p[0] + matrix[1][1] * p[1] + matrix[1][2]) / (
+        (matrix[2][0] * p[0] + matrix[2][1] * p[1] + matrix[2][2]))
+    return int(px), int(py)
+
+
+# check if finger tip point is in the key bounding box
+def checkInside(point, x, y, w, h):
+    return x < point[0] < x + w and y < point[1] < y + h
+
+
+                    
 while(cap.isOpened()):
       
     while True:
@@ -130,33 +171,72 @@ while(cap.isOpened()):
              
           
         ret, img = cap.read()
+        #img = cv2.flip(img, 1)
         #cv2.imwrite('sample.jpg',img)
         converted_image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         results=hands.process(converted_image)
         #hands, img = detector.findHands(img, flipType=False)
-        img=Hand_Finder(img)
-        lmlist=Finger_Detector(img,draw=False)
+        #img=Hand_Finder(img)
+        #lmlist=Finger_Detector(img,draw=False)
+        # if len(lmlist)!=0:  
+        #     print(lmlist[8][1:])
+        
+         
+        
 
         matrix = cv2.getPerspectiveTransform(pts1, pts2)
         imgWarp = cv2.warpPerspective(img, matrix, (widthKeybord, heightKeybord))
         #imgWarp = cv2.flip(imgWarp, 1)
         
+        img=Hand_Finder(img)
+        lmlist=Finger_Detector(img,draw=False)
+
         for point in initialWarpPoints:
             cv2.circle(img,point,5,(0,0,255),cv2.FILLED)
         
         
-        if hands:
+        if results.multi_hand_landmarks:
+             
+            # hand=handType(img)
+            #print(hand)
             #print(len(lmlist))
-            if len(lmlist) >=21:
+            if len(results.multi_handedness) == 2:
                 cv2.putText(imgBackground, "Detection: Solid", (50, 50), cv2.FONT_HERSHEY_PLAIN,
                             2, (0, 255, 0), 2)
             else:
                 cv2.putText(imgBackground, "Detection: Weak", (50, 50), cv2.FONT_HERSHEY_PLAIN,
                             2, (0, 0, 255), 2)
+            
+            # hand=handType(img)
+            # print(hand)
+            if currentKeyPressed:
 
+                # get the bbox info of the correct key to check the finger location
+                key = currentKey
+                value = keyLocations[key]
+                x, y, w, h = value[0] * scale, value[1] * scale, value[2] * scale, value[3] * scale
+                correctFinger = value[4]
+                cv2.rectangle(imgWarp, (x, y), (x + w, y + h), (50, 200, 50), cv2.FILLED)
+               
+                for id, finger in fingerIds.items():
 
-
+                    point=lmlist[int(id)][1:]
+                    #print(point)
+                    px, py = warpPoint(point, matrix)
+                    px = widthKeybord - px  # flip the point
+                    #print(px,py)
+                    cv2.circle(imgWarp, (px, py), 5, (0, 0, 255), cv2.FILLED)
+                    print('ok')
+                    
+                    if checkInside((px, py), x, y, w, h):
+                        print('hit')
+                        if handType(img) + "_"+finger==correctFinger:
+                            print("correct")
+                        else:
+                            print('wrong')
         
+
+
         # Draw the bounding bbox on the warp image
         for key, value in keyLocations.items():
             x, y, w, h = value[0] * scale, value[1] * scale, value[2] * scale, value[3] * scale
