@@ -9,11 +9,11 @@ save_path           = 'saved-media/glasses_and_stash.mp4v'
 frames_per_seconds  = 24
 config              = CFEVideoConf(cap, filepath=save_path, res='720p')
 out                 = cv2.VideoWriter(save_path, config.video_type, frames_per_seconds, config.dims)
-face_cascade        = cv2.CascadeClassifier('cascades/data/haarcascade_frontalface_default.xml')
-eyes_cascade        = cv2.CascadeClassifier('cascades/third-party/frontalEyes35x16.xml')
-nose_cascade        = cv2.CascadeClassifier('cascades/third-party/Nose18x15.xml')
-glasses             = cv2.imread("images/fun/glasses.png", -1)
-mustache            = cv2.imread('images/fun/mustache.png',-1)
+face_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/data/haarcascade_frontalface_default.xml')
+eyes_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/third-party/frontalEyes35x16.xml')
+nose_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/third-party/Nose18x15.xml')
+glasses             = cv2.imread("./Virtual Dressing Room/logo/fun/glasses.png", -1)
+mustache            = cv2.imread('./Virtual Dressing Room/logo/fun/mustache.png',-1)
 
  
 

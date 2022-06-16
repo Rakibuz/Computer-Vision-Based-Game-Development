@@ -13,8 +13,8 @@ out                 = cv2.VideoWriter(save_path, config.video_type, frames_per_s
 face_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/data/haarcascade_frontalface_default.xml')
 eyes_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/third-party/frontalEyes35x16.xml')
 nose_cascade        = cv2.CascadeClassifier('./Virtual Dressing Room/cascades/third-party/Nose18x15.xml')
-glasses             = cv2.imread("./Virtual Dressing Room/images/fun/glasses.png", -1)
-mustache            = cv2.imread('./Virtual Dressing Room/images/fun/mustache.png',-1)
+glasses             = cv2.imread("./Virtual Dressing Room/logo/fun/glasses.png", -1)
+mustache            = cv2.imread('./Virtual Dressing Room/logo/fun/mustache.png',-1)
 
 while(True):
     # Capture frame-by-frame
