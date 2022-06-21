@@ -8,9 +8,6 @@ from cvzone.HandTrackingModule import HandDetector
 width =1280
 height = 720
 
-
- 
-  
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
 cap.set(4,720)
@@ -109,7 +106,7 @@ while(cap.isOpened()):
         ret, img = cap.read()
         #cv2.imwrite('sample.jpg',img)
        
-        img = detector.findHands(img)
+        hands,img = detector.findHands(img,flipType=False)
         #print(type(img))  <class 'numpy.ndarray'>
 
         matrix = cv2.getPerspectiveTransform(pts1, pts2)
@@ -120,15 +117,14 @@ while(cap.isOpened()):
             cv2.circle(img,point,5,(0,0,255),cv2.FILLED)
         
         
-        # if img:
-        #     #print(len(lmlist))
-        #     if len(img) ==2:
-        #         cv2.putText(imgBackground, "Detection: Solid", (50, 50), cv2.FONT_HERSHEY_PLAIN,
-        #                     2, (0, 255, 0), 2)
-        #     else:
-        #         cv2.putText(imgBackground, "Detection: Weak", (50, 50), cv2.FONT_HERSHEY_PLAIN,
-        #                     2, (0, 0, 255), 2)
-
+        if hands:
+            #print(len(lmlist))
+            if len(hands) ==2:
+                cv2.putText(imgBackground, "Detection: Solid", (50, 50), cv2.FONT_HERSHEY_PLAIN,
+                            2, (0, 255, 0), 2)
+            else:
+                cv2.putText(imgBackground, "Detection: Weak", (50, 50), cv2.FONT_HERSHEY_PLAIN,
+                            2, (0, 0, 255), 2)
 
 
         
@@ -156,9 +152,6 @@ while(cap.isOpened()):
         for key, val in keyLocationsBackground.items():
             x, y, w, h = val
             cv2.putText(imgBackground, key, (x + 15, y + 45), cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255))
-
-
-
 
 
          # OpenCV  Display
