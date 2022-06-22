@@ -3,6 +3,13 @@ import numpy as np
 import face_recognition
 import os
 from datetime import datetime
+from imutils.video import WebcamVideoStream
+import time
+
+
+#frame counter
+pTime=0
+cTime=0
 
 path = './Threading_for_High_FPS/Training_images'
 images = []
@@ -42,10 +49,14 @@ encodeListKnown = findEncodings(images)
 #print(len(encodeListKnown))
 print('Encoding Complete')
 
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
+print("[INFO] sampling THREADED frames from webcam...")
+#webcamVideoStreamclass object creation
+vs = WebcamVideoStream(src=0).start()
 
 while True:
-    success, img = cap.read()
+    #success, img = cap.read()
+    img = vs.read()
     imgS = cv2.resize(img,(0,0),None,0.25,0.25)
     imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
@@ -68,6 +79,12 @@ while True:
             cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
             markAttendance(name)
 
+    cTime=time.time()
+    fps=1/(cTime-pTime)
+    #print(int(fps))
+    pTime=cTime
+    #print(int(fps))
+    cv2.putText(img,str(int(fps)),(30,50),cv2.FONT_HERSHEY_PLAIN,3,(0,0,220),3)
     cv2.imshow('Webcam',img)
     cv2.waitKey(1)  
     

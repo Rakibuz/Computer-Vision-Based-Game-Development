@@ -19,7 +19,6 @@ while True:
     
     cTime=time.time()
     fps=1/(cTime-pTime)
-    #print(int(fps))
     pTime=cTime
     #print(int(fps))
     cv2.putText(frame,str(int(fps)),(30,50),cv2.FONT_HERSHEY_PLAIN,3,(0,0,220),3) 
