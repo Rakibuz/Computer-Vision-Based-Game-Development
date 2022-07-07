@@ -17,7 +17,7 @@ detector = HandDetector(detectionCon=0.8, maxHands=1)
 
 #communication--- for UDP protocol
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddressPort = ("192.168.0.1", 8080)
+serverAddressPort = ("127.0.0.1", 5052)
 
       
 while True:
@@ -37,7 +37,9 @@ while True:
         #print(data)
 
         sock.sendto(str.encode(str(data)), serverAddressPort)
+    
 
+    img=cv2.resize(img,(0,0),None,0.5,0.5)
     cv2.imshow('img', img)
     if cv2.waitKey(1) & 0xff == ord('q'):
         break
