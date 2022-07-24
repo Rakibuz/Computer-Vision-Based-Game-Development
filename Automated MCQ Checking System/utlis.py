@@ -37,3 +37,26 @@ def stackImages(imgArray,scale,lables=[]):
                 cv2.rectangle(ver,(c*eachImgWidth,eachImgHeight*d),(c*eachImgWidth+len(lables[d][c])*13+27,30+eachImgHeight*d),(255,255,255),cv2.FILLED)
                 cv2.putText(ver,lables[d][c],(eachImgWidth*c+10,eachImgHeight*d+20),cv2.FONT_HERSHEY_COMPLEX,0.7,(255,0,255),2)
     return ver
+
+
+def rectContour(contours):
+
+    rectCon = []
+    max_area = 0
+    for i in contours:
+        area = cv2.contourArea(i)
+        if area > 50:
+            peri = cv2.arcLength(i, True)
+            approx = cv2.approxPolyDP(i, 0.02 * peri, True)
+            #checcking if there is four corner point or not
+            if len(approx) == 4:
+                rectCon.append(i)
+    rectCon = sorted(rectCon, key=cv2.contourArea,reverse=True)
+    #print(len(rectCon))
+    return rectCon
+
+
+def getCornerPoints(cont):
+    peri = cv2.arcLength(cont, True) # LENGTH OF CONTOUR
+    approx = cv2.approxPolyDP(cont, 0.02 * peri, True) # APPROXIMATE THE POLY TO GET CORNER POINTS
+    return approx
