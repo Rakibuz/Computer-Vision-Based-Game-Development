@@ -1,3 +1,4 @@
+from random import choices
 import cv2
 import numpy as np
 from sklearn import utils
@@ -7,6 +8,8 @@ import utlis
 path="./Automated MCQ Checking System/OMR_Project_Multiple_Choice.JPG"
 widthImg=700
 heightImg=700
+questions=5
+choices=5
 
 #######################################################
 
@@ -63,7 +66,22 @@ if biggestContour.size !=0 and gradePoints.size!=0:
     imgThresh=cv2.threshold(imgWarpGray,170,255,cv2.THRESH_BINARY_INV)[1]
 
 
-    utlis.splitBoxes(imgThresh)
+    boxes=utlis.splitBoxes(imgThresh)
+    #cv2.imshow('Test',boxes[2])
+    #print(cv2.countNonZero(boxes[1]),cv2.countNonZero(boxes[2]))
+    myPixelVal =np.zeros((questions,choices))
+    countC=0
+    countR=0
+    for image in boxes:
+        totalPixels=cv2.countNonZero(image)
+        #print(totalPixels)
+        myPixelVal[countR][countC]=totalPixels
+        #print(myPixelVal)
+        countC +=1
+        if(countC==choices):countR +=1;countC=0
+    print(myPixelVal) #pixel values of each circle
+
+
 
 
 imgBlank=np.zeros_like(img)
