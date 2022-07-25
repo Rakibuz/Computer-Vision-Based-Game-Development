@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from sklearn import utils
 import utlis
 
 ########################################################
@@ -26,22 +27,48 @@ imgCanny=cv2.Canny(imgBlur,10,50)
 #Image contouring is process of identifying structural outlines of objects 
 # in an image which in turn can help us identify shape of the object.
 
-countours,hierarchy=cv2.findContours(imgCanny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-cv2.drawContours(imgContours,countours,-1,(0,255,0),10)
+contours,hierarchy=cv2.findContours(imgCanny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+cv2.drawContours(imgContours,contours,-1,(0,255,0),10)
 
 #Find Rectangles
-rectCon=utlis.rectContour(countours)
+rectCon=utlis.rectContour(contours)
 biggestContour=utlis.getCornerPoints(rectCon[0])
 gradePoints=utlis.getCornerPoints(rectCon[1])
 #print(biggestContour)
 if biggestContour.size !=0 and gradePoints.size!=0:
-    cv2.drawContours(imgBiggestContours,biggestContour,-1,(0,0,255),10)
-    cv2.drawContours(imgBiggestContours,gradePoints,-1,(255,0,0),10)
+    cv2.drawContours(imgBiggestContours,biggestContour,-1,(0,0,255),20)
+    cv2.drawContours(imgBiggestContours,gradePoints,-1,(255,0,0),20)
+    
+    biggestContour=utlis.reorder(biggestContour)
+    gradePoints=utlis.reorder(gradePoints)
+
+
+    pts1 = np.float32(biggestContour) # PREPARE POINTS FOR WARP
+    pts2 = np.float32([[0, 0],[widthImg, 0], [0, heightImg],[widthImg, heightImg]]) # PREPARE POINTS FOR WARP
+    matrix = cv2.getPerspectiveTransform(pts1, pts2) # GET TRANSFORMATION MATRIX
+    imgWarpColored = cv2.warpPerspective(img, matrix, (widthImg, heightImg)) # APPLY WARP PERSPECTIVE
+
+
+
+    ptG1 = np.float32(gradePoints) # PREPARE POINTS FOR WARP
+    ptG2 = np.float32([[0, 0],[325, 0], [0, 150],[325, 150]]) # PREPARE POINTS FOR WARP
+    matrixG = cv2.getPerspectiveTransform(ptG1, ptG2) # GET TRANSFORMATION MATRIX
+    imgGradeDisplay = cv2.warpPerspective(img, matrixG, (325, 150)) # APPLY WARP PERSPECTIVE
+    #cv2.imshow("Grade",imgGradeDisplay)
+
+
+    #APPLY THRESOLD
+    
+    imgWarpGray=cv2.cvtColor(imgWarpColored,cv2.COLOR_BGR2GRAY)
+    imgThresh=cv2.threshold(imgWarpGray,170,255,cv2.THRESH_BINARY_INV)[1]
+
+
+    utlis.splitBoxes(imgThresh)
 
 
 imgBlank=np.zeros_like(img)
 imageArray=([img,imgGray,imgBlur,imgCanny],
-            [imgContours,imgBiggestContours,imgBlank,imgBlank])
+            [imgContours,imgBiggestContours,imgWarpColored,imgThresh])
 imgStacked=utlis.stackImages(imageArray,0.5)
 
 
