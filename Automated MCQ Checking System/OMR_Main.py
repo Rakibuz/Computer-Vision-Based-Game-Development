@@ -10,6 +10,8 @@ widthImg=700
 heightImg=700
 questions=5
 choices=5
+ans=[1,2,0,1,4]
+
 
 #######################################################
 
@@ -69,6 +71,9 @@ if biggestContour.size !=0 and gradePoints.size!=0:
     boxes=utlis.splitBoxes(imgThresh)
     #cv2.imshow('Test',boxes[2])
     #print(cv2.countNonZero(boxes[1]),cv2.countNonZero(boxes[2]))
+
+    #Getting non zero pixel values of each box
+
     myPixelVal =np.zeros((questions,choices))
     countC=0
     countR=0
@@ -79,15 +84,45 @@ if biggestContour.size !=0 and gradePoints.size!=0:
         #print(myPixelVal)
         countC +=1
         if(countC==choices):countR +=1;countC=0
-    print(myPixelVal) #pixel values of each circle
+    #print(myPixelVal) #pixel values of each circle 
+   
+    #finding the maximum pixel values
+    #Finding Index values
+    myIndex=[]
+    for x in range(0,questions):
+        arr=myPixelVal[x]
+        #print("arr",arr)
+        myIndexVal = np.where(arr==np.amax(arr))
+        #print(myIndexVal[0])
+        myIndex.append(myIndexVal[0][0])
+    #print(myIndex)
 
+
+    #GRADING
+
+    grading=[]
+
+    for x in range (0,questions):
+        if ans[x] == myIndex[x]:
+            grading.append(1)
+        else:
+            grading.append(0)
+    #print(grading)
+    score= (sum(grading)/questions)*100    #Final Grade   sum(grading)=4, number of questions=5, 4/5=0.8
+    print(score)
+
+    
+    #Displaying Answer
+    imgResult=imgWarpColored.copy()
+    imgResult=utlis.showAnswers(imgResult,myIndex,grading,ans,questions,choices)
 
 
 
 imgBlank=np.zeros_like(img)
 imageArray=([img,imgGray,imgBlur,imgCanny],
-            [imgContours,imgBiggestContours,imgWarpColored,imgThresh])
-imgStacked=utlis.stackImages(imageArray,0.5)
+            [imgContours,imgBiggestContours,imgWarpColored,imgThresh],
+            [imgResult,imgBlank,imgBlank,imgBlank])
+imgStacked=utlis.stackImages(imageArray,0.3)
 
 
 cv2.imshow("Stacked Images",imgStacked)
