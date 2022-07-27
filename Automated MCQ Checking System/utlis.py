@@ -98,7 +98,17 @@ def showAnswers(img,myIndex,grading,ans,questions=5,choices=5):
          cX = (myAns * secW) + secW // 2
          cY = (x * secH) + secH // 2
 
-         cv2.circle(img,(cX,cY),50,(0,255,0),cv2.FILLED)
+
+         if grading[x]==1:
+            myColor=(0,255,0)
+         else:
+            myColor=(0,0,255)
+            correctAns=ans[x]
+            cv2.circle(img,((correctAns*secW)+secW//2,(x*secH)+secH//2),20,(0,255,0),cv2.FILLED)
+     
+
+
+         cv2.circle(img,(cX,cY),50,myColor,cv2.FILLED)
      
      return img
 
