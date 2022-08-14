@@ -31,7 +31,7 @@ def get_blinking_ratio(eye_points, facial_landmarks):
 
 
 
-def gaze_ratio(eye_points, facial_landmarks):
+def get_gaze_ratio(eye_points, facial_landmarks):
         # Gaze detection
         left_eye_region = np.array([(facial_landmarks.part(eye_points[0]).x, facial_landmarks.part(eye_points[0]).y),
                             (facial_landmarks.part(eye_points[1]).x, facial_landmarks.part(eye_points[1]).y),
@@ -66,14 +66,18 @@ def gaze_ratio(eye_points, facial_landmarks):
         right_side_threshold=threshold_eye[0:height,int(width/2):width] #h= 0 to Height, w= half width to given width
         right_side_white=cv2.countNonZero(right_side_threshold)
 
-        try:
-            gaze_ratio=left_side_white/right_side_white
-        except ZeroDivisionError:
-            gaze_ratio=0
+        if left_side_white == 0:
+            gaze_ratio = 1
+        elif right_side_white == 0:
+            gaze_ratio = 5
+        else:
+            gaze_ratio = left_side_white / right_side_white
+     
 
         return gaze_ratio
 while True:
     ret,frame= cap.read()
+    new_frame = np.zeros((500, 500, 3), np.uint8)
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
     faces =detector(gray)
@@ -97,13 +101,29 @@ while True:
 
         if blinking_ratio >5.7:
             cv2.putText(frame,"BLINKING",(50,150),font,7,(255,255,0))
+
+            # Gaze detection
+        gaze_ratio_left_eye = get_gaze_ratio([36, 37, 38, 39, 40, 41], landmarks)
+        gaze_ratio_right_eye = get_gaze_ratio([42, 43, 44, 45, 46, 47], landmarks)
+        gaze_ratio = (gaze_ratio_right_eye + gaze_ratio_left_eye) / 2
+
+
+        if gaze_ratio <= 1:
+            cv2.putText(frame, "RIGHT", (50, 100), font, 2, (0, 0, 255), 3)
+            new_frame[:] = (0, 0, 255)
+        elif 1 < gaze_ratio < 1.7:
+            cv2.putText(frame, "CENTER", (50, 100), font, 2, (0, 0, 255), 3)
+        else:
+            new_frame[:] = (255, 0, 0)
+            cv2.putText(frame, "LEFT", (50, 100), font, 2, (0, 0, 255), 3)
+
         
 
         
             
 
         
-        cv2.putText(frame,str(gaze_ratio),(50,100),font,2,(0,0,255),3)
+        #cv2.putText(frame,str(gaze_ratio),(50,100),font,2,(0,0,255),3)
         #cv2.putText(frame,str(right_side_white),(50,150),font,2,(0,0,255),3)
 
         # threshold_eye =cv2.resize(threshold_eye , None,fx=5,fy=5)
@@ -119,6 +139,7 @@ while True:
 
    
     cv2.imshow("Frame",frame)
+    cv2.imshow("New Frame",new_frame)
     if cv2.waitKey(25) & 0xFF == ord("q"):
             break
 
