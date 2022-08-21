@@ -1,3 +1,4 @@
+from datetime import datetime
 import mysql.connector
 
 db= mysql.connector.connect(
@@ -24,4 +25,7 @@ mycursor=db.cursor()
 # for x in mycursor:
 #     print(x)
 
+#mycursor.execute("CREATE TABLE Test(name varchar(50) NOT NULL,created datetime NOT NULL, gender ENUM('M','F','O') NOT NULL, id int PRIMARY KEY NOT NULL AUTO_INCREMENT)")
 
+mycursor.execute("INSERT INTO Test (name,created,gender) VALUES (%s,%s,%s)",('Zara',datetime.now(),"F"))
+db.commit()
