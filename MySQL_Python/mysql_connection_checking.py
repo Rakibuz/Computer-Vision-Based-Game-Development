@@ -27,5 +27,17 @@ mycursor=db.cursor()
 
 #mycursor.execute("CREATE TABLE Test(name varchar(50) NOT NULL,created datetime NOT NULL, gender ENUM('M','F','O') NOT NULL, id int PRIMARY KEY NOT NULL AUTO_INCREMENT)")
 
-mycursor.execute("INSERT INTO Test (name,created,gender) VALUES (%s,%s,%s)",('Zara',datetime.now(),"F"))
-db.commit()
+# mycursor.execute("INSERT INTO Test (name,created,gender) VALUES (%s,%s,%s)",('Rakibuz',datetime.now(),"M"))
+# db.commit()
+
+
+# mycursor.execute("SELECT id,name FROM Test WHERE gender='M' ORDER BY id DESC")
+# for x in mycursor:
+#     print(x)
+
+mycursor.execute(" ALTER TABLE Test ADD COLUMN food VARCHAR(50) NOT NULL")
+
+mycursor.execute("DESCRIBE Test")
+for x in mycursor:
+    print(x)
+ 
