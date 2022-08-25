@@ -5,6 +5,8 @@ import os
 from datetime import datetime
 from imutils.video import WebcamVideoStream
 import time
+import csv  #writing  encoded list to csv
+import pandas as pd
 
 
 
@@ -38,16 +40,34 @@ print(myList)
 for cl in myList:
     curImg = cv2.imread(f'{path}/{cl}')
     images.append(curImg)
-    classNames.append(os.path.splitext(cl)[0])  
+    classNames.append(os.path.splitext(cl)[0])  #only name split the .jpg
 print(classNames)
 
-def findEncodings(images):
-    encodeList = []
-    for img in images:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        encode = face_recognition.face_encodings(img)[0]
-        encodeList.append(encode)
-    return encodeList
+# def findEncodings(images):
+#     encodeList = []
+    
+#     for img in images:
+#         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#         encode = face_recognition.face_encodings(img)[0]
+#         #writer.writerow(encode)
+#         #print(encode)
+#         encodeList.append(encode)
+
+
+#         # with open("./Threading_for_High_FPS/Encoded.csv", 'r+') as f:
+#         #     f.truncate(0)
+#         #     np.savetxt("./Threading_for_High_FPS/Encoded.csv", encodeList,delimiter =", ", fmt ='% s')
+#     #print(encodeList)
+#     return encodeList
+
+
+def encoding_reader():
+    df = pd.read_csv('./Threading_for_High_FPS/Encoded.csv', delimiter=',',header=None)
+    list_of_csv = [list(row) for row in df.values]
+    #print(list_of_csv)
+    return list_of_csv
+
+
 
 #marking attendance
 def markAttendance(name):
@@ -79,9 +99,12 @@ def markAttendance_sql(name):
 
 
 
+#encodeListKnown = findEncodings(images)
+encodeListKnown = encoding_reader()
 
-encodeListKnown = findEncodings(images)
+
 #print(len(encodeListKnown))
+#print(encodeListKnown)
 print('Encoding Complete')
 
 #cap = cv2.VideoCapture(0)
@@ -102,6 +125,7 @@ while True:
         matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
         faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
         #print(faceDis)
+        
         matchIndex = np.argmin(faceDis)
 
         if matches[matchIndex]:
