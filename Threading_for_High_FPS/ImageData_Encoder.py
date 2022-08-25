@@ -36,14 +36,14 @@ def findEncodings(images):
         encodeList.append(encode)
 
 
-        with open("./Threading_for_High_FPS/Encoded.csv", 'r+') as f:
-            f.truncate(0)
-        np.savetxt("./Threading_for_High_FPS/Encoded.csv", encodeList,delimiter =", ", fmt ='% s')
+        with open("./Threading_for_High_FPS/Encoded.csv", 'r+') as f: #open the csv file
+            f.truncate(0) #remove/clear previous content
+        np.savetxt("./Threading_for_High_FPS/Encoded.csv", encodeList,delimiter =", ", fmt ='% s')#saving the text to Encoded csv file
    
     return encodeList
 
 
-def encoding_reader():
+def encoding_reader(): #this function read the encoded csv file and send as a list to the program
     df = pd.read_csv('./Threading_for_High_FPS/Encoded.csv', delimiter=',',header=None)
     list_of_csv = [list(row) for row in df.values]
     #print(list_of_csv)
