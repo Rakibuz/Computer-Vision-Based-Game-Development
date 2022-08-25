@@ -52,4 +52,4 @@ def encoding_reader(): #this function read the encoded csv file and send as a li
 
 
 encodeListKnown = findEncodings(images)
-encodeListKnown_new = encoding_reader()
+encodeListKnown_reader = encoding_reader()
