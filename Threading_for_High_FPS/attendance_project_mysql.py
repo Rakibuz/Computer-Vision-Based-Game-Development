@@ -144,7 +144,8 @@ while True:
         #unknown face detection
         if faceDis[matchIndex]< 0.50:
             name = classNames[matchIndex].upper()
-            #dwell
+
+            #dwell time detection 
             if name not in object_id_list:
                 object_id_list.append(name)
                 dtime[name]=datetime.now()
@@ -159,6 +160,7 @@ while True:
                 if(int(dwell_time[name])>=5):
                     markAttendance(name)
                     markAttendance_sql(name)
+                    
         else: name = 'Unknown'
         #print(name)
         y1,x2,y2,x1 = faceLoc
