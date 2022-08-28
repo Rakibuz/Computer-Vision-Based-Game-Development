@@ -157,10 +157,11 @@ while True:
                 dtime[name]=datetime.now()
                 sec=time_diff.total_seconds()
                 dwell_time[name] +=sec
+                
                 if(int(dwell_time[name])>=5):
                     markAttendance(name)
                     markAttendance_sql(name)
-                    
+
         else: name = 'Unknown'
         #print(name)
         y1,x2,y2,x1 = faceLoc
