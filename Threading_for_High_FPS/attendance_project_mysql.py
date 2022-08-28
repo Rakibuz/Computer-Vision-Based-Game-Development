@@ -25,9 +25,6 @@ db= mysql.connector.connect(
 mycursor=db.cursor()
 
 
-
-
-
 #frame counter
 pTime=0
 cTime=0
@@ -112,6 +109,11 @@ print("[INFO] sampling THREADED frames from webcam...")
 #webcamVideoStreamclass object creation
 vs = WebcamVideoStream(src=0).start()
 
+#dwell time counter
+object_id_list=[]
+dtime=dict()
+dwell_time=dict()
+
 while True:
     #success, img = cap.read()
     img = vs.read()
@@ -138,18 +140,33 @@ while True:
         #     cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
         #     markAttendance(name)
         #     markAttendance_sql(name)
-
+        #------------------------------------------------------x---------------------------------
+        #unknown face detection
         if faceDis[matchIndex]< 0.50:
             name = classNames[matchIndex].upper()
-            markAttendance(name)
-            markAttendance_sql(name)
+            #dwell
+            if name not in object_id_list:
+                object_id_list.append(name)
+                dtime[name]=datetime.now()
+                dwell_time[name]=0
+            else:
+                curr_time=datetime.now()
+                old_time=dtime[name]
+                time_diff=curr_time-old_time
+                dtime[name]=datetime.now()
+                sec=time_diff.total_seconds()
+                dwell_time[name] +=sec
+                if(int(dwell_time[name])>=5):
+                    markAttendance(name)
+                    markAttendance_sql(name)
         else: name = 'Unknown'
         #print(name)
         y1,x2,y2,x1 = faceLoc
         y1, x2, y2, x1 = y1*4,x2*4,y2*4,x1*4
         cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
         cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
-        cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
+        text="{}|{}".format(name,int(dwell_time[name]))
+        cv2.putText(img,text,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
 
            
     cTime=time.time()
