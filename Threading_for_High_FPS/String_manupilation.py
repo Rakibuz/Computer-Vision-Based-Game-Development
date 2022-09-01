@@ -1,23 +1,39 @@
 from datetime import datetime
 import csv
+import re
 
 
-url = "https://www.exaple.com/index.php?id=24124"
-id_number = url.split('=')[1]
-print(type(id_number))
-print(id_number)
-if(id_number=='24124'):
-    print('hello')
+
+url = "https://www.exaple.com/index.php?id=24124 "
+price = re.findall("\d+", url)[0]
+print(price)
+print(len(price))
 
 
-name=id_number
-now = datetime.now()
-Str_time = now.strftime("%H:%M:%S")
-Str_day = now.strftime("%m/%d/%Y")
-user=[name,Str_time,Str_day]
 
-#print(type(user))
-myFile = open('./Threading_for_High_FPS/Attendance.csv', 'r+')
-writer = csv.writer(myFile)
-writer.writerow(user)
-#myFile.close()
+# id_number = url.split('=')[1]
+# print(type(id_number))
+# print(len(id_number))
+# print(id_number)
+
+
+
+
+
+
+
+# if(id_number=='24124'):
+#     print('hello')
+
+
+# name=id_number
+# now = datetime.now()
+# Str_time = now.strftime("%H:%M:%S")
+# Str_day = now.strftime("%m/%d/%Y")
+# user=[name,Str_time,Str_day]
+
+# #print(type(user))
+# myFile = open('./Threading_for_High_FPS/Attendance.csv', 'r+')
+# writer = csv.writer(myFile)
+# writer.writerow(user)
+# #myFile.close()
