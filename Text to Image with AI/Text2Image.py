@@ -15,6 +15,13 @@ app.geometry("532x632")
 app.title("Goriber Midjourney AI") 
 ctk.set_appearance_mode("dark") 
 
+prompt = ctk.CTkEntry(height=40, width=512, text_font=("Arial", 20), text_color="black", fg_color="white") 
+prompt.place(x=10, y=10)
+
+
+lmain = ctk.CTkLabel(height=512, width=512)
+lmain.place(x=10, y=110)
+
 
 
 app.mainloop()
